@@ -3,7 +3,7 @@
 
     <!-- Simple file output -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/woodeey_web.log</file>
+        <file>logs/springtide-core.log</file>
         <append>true</append>
         <!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <encoder>
@@ -12,7 +12,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>logs/woodeey_rest-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/springtide-core-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 64 MB -->
@@ -21,7 +21,7 @@
         </rollingPolicy>
 
         <!-- Safely log to the same file from multiple JVMs. Degrades performance! -->
-        <!--<prudent>true</prudent>-->
+        <prudent>true</prudent>
     </appender>
 
     <root level="WARN">

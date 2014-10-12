@@ -3,6 +3,7 @@ import Keys._
 import org.sbtidea.SbtIdeaPlugin._
 import xerial.sbt.Pack._
 import com.zavakid.sbt.OneLog.OneLogKeys._
+import org.flywaydb.sbt.FlywayPlugin._
 
 object SpringtideBuild extends Build {
   import BuildSettings._
@@ -30,6 +31,7 @@ object SpringtideBuild extends Build {
             todolistDependencies)
     .settings(todolistSettings : _*)
     .settings(oneLogSettings: _*)
+    .dependsOn(core)
 
 }
 
@@ -73,10 +75,13 @@ object BuildSettings {
     ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ packSettings 
 
   lazy val coreSettings = basicSettings
-  lazy val todolistSettings = basicSettings ++ Seq(
+  lazy val todolistSettings = basicSettings ++ seq(flywaySettings: _*) ++ Seq(
     //packMain := Map("" -> "com.mogujie.dragon.gaia.web.GaiaRestLauncher")
     //,packExtraClasspath := Map("gaiaRest" -> Seq("${PROG_HOME}/conf"))
-    )
+    flywayUrl := "jdbc:mysql://127.0.0.1/c100k"    
+    , flywayUser := "c100k"
+    , flywayPassword := "c100k"
+  ) 
 }
 
 object Dependencies {
@@ -97,7 +102,7 @@ object Dependencies {
   def coreDependencies:Seq[ModuleID] = basicDependencies ++ Seq(
   )
 
-  def todolistDependencies = basicDependencies ++ jetty ++ database ++ Seq(
+  def todolistDependencies = basicDependencies ++ jetty ++ database ++ h2 ++ Seq(
   )
 
   // commons dependency
@@ -145,6 +150,10 @@ object Dependencies {
     "org.scalatra" %% "scalatra" % ScalatraVersion,
     "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
     "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test"
+  )
+
+  lazy val h2 = Seq(
+    "com.h2database" % "h2" % "1.4.181"
   )
 
 }

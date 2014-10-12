@@ -20,8 +20,6 @@
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
 
-        <!-- Safely log to the same file from multiple JVMs. Degrades performance! -->
-        <prudent>true</prudent>
     </appender>
 
     <root level="WARN">

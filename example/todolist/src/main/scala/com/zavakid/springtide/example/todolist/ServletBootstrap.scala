@@ -1,6 +1,6 @@
 package com.zavakid.springtide.example.todolist
 
-import java.util
+import java.util.EnumSet
 import javax.servlet.{DispatcherType, ServletContext}
 
 import com.zavakid.springtide.example.todolist.config.SpringMvcConfig
@@ -26,7 +26,7 @@ class ServletBootstrap extends WebApplicationInitializer {
     val charencodingFilter = sc.addFilter("charencodingFilter", classOf[CharacterEncodingFilter])
     charencodingFilter.setInitParameter("encoding", "UTF-8")
     charencodingFilter.setInitParameter("forceEncoding", "true")
-    charencodingFilter.addMappingForUrlPatterns(util.EnumSet.allOf(classOf[DispatcherType]), true, "/*")
+    charencodingFilter.addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
   }
 
 

@@ -7,7 +7,8 @@ import javax.sql.DataSource
 import com.alibaba.druid.pool.DruidDataSource
 import com.zavakid.springtide.args.AcceptsArgResolver
 import com.zavakid.springtide.example.todolist.config.SpringMvcConfig._
-import com.zavakid.springtide.support.TwirlReturnTypeHandler
+import com.zavakid.springtide.example.todolist.util.Exceptions
+import com.zavakid.springtide.support.{TwirlHandleExceptionResolver, TwirlReturnTypeHandler}
 import com.zavakid.springtide.util.JacksonUtil
 import com.zavakid.springtide.view.JsonViewResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,9 +21,9 @@ import org.springframework.orm.jpa.{JpaTransactionManager, LocalContainerEntityM
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.method.support.{HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler}
-import org.springframework.web.servlet.ViewResolver
 import org.springframework.web.servlet.config.annotation.{ContentNegotiationConfigurer, ResourceHandlerRegistry, WebMvcConfigurationSupport}
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver
+import org.springframework.web.servlet.{HandlerExceptionResolver, ViewResolver}
 import org.thymeleaf.spring4.SpringTemplateEngine
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver
 import org.thymeleaf.spring4.view.ThymeleafViewResolver
@@ -99,10 +100,21 @@ class SpringMvcConfig extends WebMvcConfigurationSupport {
       .defaultContentType(MediaType.TEXT_HTML)
   }
 
-
   override def addArgumentResolvers(argumentResolvers: util.List[HandlerMethodArgumentResolver]): Unit = {
     super.addArgumentResolvers(argumentResolvers)
     argumentResolvers.add(0, acceptsArgResolver)
+  }
+
+
+  override def configureHandlerExceptionResolvers(exceptionResolvers: util.List[HandlerExceptionResolver]): Unit = {
+    super.configureHandlerExceptionResolvers(exceptionResolvers)
+    exceptionResolvers.add(twirlHandleExceptionResolver)
+  }
+
+  @Bean
+  def twirlHandleExceptionResolver: TwirlHandleExceptionResolver = {
+    val resolver = TwirlHandleExceptionResolver(Exceptions.webExceptionHandler)
+    resolver
   }
 
   @Bean

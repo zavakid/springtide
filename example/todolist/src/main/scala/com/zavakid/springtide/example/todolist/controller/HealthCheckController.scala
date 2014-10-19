@@ -7,6 +7,8 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 
+import scala.util.control.NoStackTrace
+
 @Controller
 @RequestMapping(Array("/health"))
 class HealthCheckController {
@@ -18,5 +20,7 @@ class HealthCheckController {
     case MediaType.APPLICATION_JSON => Json(JsonDto("OK"))
   }
 
+  @RequestMapping(Array("exception"))
+  def exceptionHandle() = throw new RuntimeException with NoStackTrace
 
 }

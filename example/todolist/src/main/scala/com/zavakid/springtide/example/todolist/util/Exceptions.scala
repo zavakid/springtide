@@ -1,9 +1,7 @@
 package com.zavakid.springtide.example.todolist.util
 
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-
-import com.zavakid.springtide.args.Accepts
-import com.zavakid.springtide.support.{TwirlHandleExceptionResolver, TwirlReturnTypeHandler}
+import com.zavakid.springtide.support.{Accepts, TwirlHandleExceptionResolver, TwirlReturnTypeHandler}
 import com.zavakid.springtide.twirl.Json
 import org.springframework.http.MediaType
 import play.twirl.api.Html

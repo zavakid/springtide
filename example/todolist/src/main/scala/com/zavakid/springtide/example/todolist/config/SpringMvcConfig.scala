@@ -5,10 +5,9 @@ import javax.persistence.EntityManagerFactory
 import javax.sql.DataSource
 
 import com.alibaba.druid.pool.DruidDataSource
-import com.zavakid.springtide.args.AcceptsArgResolver
 import com.zavakid.springtide.example.todolist.config.SpringMvcConfig._
 import com.zavakid.springtide.example.todolist.util.Exceptions
-import com.zavakid.springtide.support.{TwirlHandleExceptionResolver, TwirlReturnTypeHandler}
+import com.zavakid.springtide.support.{AcceptsResolveFilter, AcceptsArgResolver, TwirlHandleExceptionResolver, TwirlReturnTypeHandler}
 import com.zavakid.springtide.util.JacksonUtil
 import com.zavakid.springtide.view.JsonViewResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -119,6 +118,9 @@ class SpringMvcConfig extends WebMvcConfigurationSupport {
 
   @Bean
   def acceptsArgResolver = new AcceptsArgResolver
+
+  @Bean(name= Array("acceptsResolveFilter"))
+  def acceptsResolveFilter = new AcceptsResolveFilter
 
   @Bean
   def contentNegotiatingViewResolver(): ViewResolver = {

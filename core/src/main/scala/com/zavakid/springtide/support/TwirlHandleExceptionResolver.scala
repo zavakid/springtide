@@ -2,7 +2,6 @@ package com.zavakid.springtide.support
 
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
-import com.zavakid.springtide.args.{Accepts, AcceptsArgResolver}
 import com.zavakid.springtide.support.TwirlHandleExceptionResolver.TwirlExceptionHandler
 import org.springframework.beans.{ConversionNotSupportedException, TypeMismatchException}
 import org.springframework.http.MediaType
@@ -27,7 +26,7 @@ class TwirlHandleExceptionResolver extends HandlerExceptionResolver {
   var defaultExceptionHandler: TwirlExceptionHandler = _
 
   override def resolveException(request: HttpServletRequest, response: HttpServletResponse, handler: scala.Any, ex: Exception): ModelAndView = {
-    val accepts = Accepts(AcceptsArgResolver.getCachedMediaType(request).getOrElse(MediaType.TEXT_HTML))
+    val accepts = Accepts(Accepts.resolved(request).map(_.mediaType).getOrElse(MediaType.TEXT_HTML))
     ex match {
       case _@(_: NoSuchRequestHandlingMethodException | _: NoHandlerFoundException) => defaultExceptionHandler(404, request, response, handler, accepts, ex)
       case _@(_: HttpRequestMethodNotSupportedException) => defaultExceptionHandler(405, request, response, handler, accepts, ex)

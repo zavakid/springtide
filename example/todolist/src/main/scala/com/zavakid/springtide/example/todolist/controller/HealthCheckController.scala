@@ -1,7 +1,7 @@
 package com.zavakid.springtide.example.todolist.controller
 
-import com.zavakid.springtide.args.Accepts
 import com.zavakid.springtide.dto.JsonDto
+import com.zavakid.springtide.support.Accepts
 import com.zavakid.springtide.twirl.Json
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller

@@ -1,4 +1,4 @@
-package com.zavakid.springtide.example.todolist.controller.user
+package com.zavakid.springtide.example.todolist.controller.task
 
 import com.zavakid.springtide.example.todolist.repository.{TaskRepository, UserRepository}
 import org.springframework.beans.factory.annotation.Autowired

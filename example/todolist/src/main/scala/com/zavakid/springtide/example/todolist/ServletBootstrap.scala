@@ -1,11 +1,13 @@
 package com.zavakid.springtide.example.todolist
 
-import javax.servlet.ServletContext
+import java.util
+import javax.servlet.{DispatcherType, ServletContext}
 
 import com.zavakid.springtide.example.todolist.config.SpringMvcConfig
 import org.springframework.web.WebApplicationInitializer
 import org.springframework.web.context.ContextLoaderListener
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+import org.springframework.web.filter.CharacterEncodingFilter
 import org.springframework.web.servlet.DispatcherServlet
 
 /**
@@ -20,6 +22,11 @@ class ServletBootstrap extends WebApplicationInitializer {
     sc.addListener(new ContextLoaderListener(context))
     val dispatcher = sc.addServlet("spring-dispatcher", new DispatcherServlet(context))
     dispatcher.addMapping("/*")
+
+    val charencodingFilter = sc.addFilter("charencodingFilter", classOf[CharacterEncodingFilter])
+    charencodingFilter.setInitParameter("encoding", "UTF-8")
+    charencodingFilter.setInitParameter("forceEncoding", "true")
+    charencodingFilter.addMappingForUrlPatterns(util.EnumSet.allOf(classOf[DispatcherType]), true, "/*")
   }
 
 

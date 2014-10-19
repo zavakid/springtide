@@ -5,11 +5,9 @@ case class JsonDto[T](var success: Boolean = true,
                       var data: Option[T] = None,
                       var error: Option[ErrorMessage] = None
                        )
-
 case class ErrorMessage(var code: Int = 500,
                         var message: Option[String] = None
                          )
-
 
 object JsonDto {
 

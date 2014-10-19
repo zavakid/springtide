@@ -4,6 +4,14 @@ import org.sbtidea.SbtIdeaPlugin._
 import xerial.sbt.Pack._
 import com.zavakid.sbt.OneLog.OneLogKeys._
 import org.flywaydb.sbt.FlywayPlugin._
+import com.typesafe.sbt.web.SbtWeb
+import com.typesafe.sbt.web.SbtWeb.autoImport._
+import WebKeys._
+import com.typesafe.sbt.rjs.SbtRjs.autoImport._
+import com.typesafe.sbt.digest.SbtDigest.autoImport._
+import com.typesafe.sbt.gzip.SbtGzip.autoImport._
+import play.twirl.sbt._
+import play.twirl.sbt.Import.TwirlKeys
 
 object SpringtideBuild extends Build {
   import BuildSettings._
@@ -27,11 +35,14 @@ object SpringtideBuild extends Build {
 
   lazy val todolist = Project(id = "springtide-example-todolist",
     base = file("example/todolist"))
+    //.enablePlugins(SbtWeb)
+    //.settings(SbtWeb.projectSettings: _*)
     .settings(libraryDependencies ++=
             todolistDependencies)
     .settings(todolistSettings : _*)
     .settings(oneLogSettings: _*)
     .dependsOn(core)
+    .enablePlugins(SbtTwirl)
 
 }
 
@@ -81,6 +92,14 @@ object BuildSettings {
     flywayUrl := "jdbc:mysql://127.0.0.1/c100k"    
     , flywayUser := "c100k"
     , flywayPassword := "c100k"
+
+    //sbt-web
+    //,(pipelineStages in Assets) := Seq(rjs, digest)
+    //,TwirlKeys.templateImports ++= Seq(
+    //  "play.twirl.api._"
+    //)
+
+    
   ) 
 }
 
@@ -99,10 +118,17 @@ object Dependencies {
       "net.sf.dozer" % "dozer" % "5.5.1"  
     ) ++ akka ++ jackson ++ spring ++ springWeb
 
-  def coreDependencies:Seq[ModuleID] = basicDependencies ++ Seq(
+  def coreDependencies:Seq[ModuleID] = basicDependencies ++ twirlTemplate ++ Seq(
+    "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
   )
 
-  def todolistDependencies = basicDependencies ++ jetty ++ database ++ h2 ++ Seq(
+  def todolistDependencies = basicDependencies ++ jetty ++ 
+    database ++ h2 ++ thymeTemplate ++ twirlTemplate ++ Seq(
+    "org.webjars" % "bootstrap" % "3.2.0"
+  )
+
+  lazy val twirlTemplate = Seq(
+    "com.typesafe.play" % "twirl-api_2.11" % "1.0.2"
   )
 
   // commons dependency
@@ -137,7 +163,8 @@ object Dependencies {
   lazy val jackson = Seq(
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.2",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.4.2",
-    "com.fasterxml.jackson.core" % "jackson-core" % "2.4.2"
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.4.2",
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.4.2"
   )
 
   lazy val akka = Seq(
@@ -154,6 +181,13 @@ object Dependencies {
 
   lazy val h2 = Seq(
     "com.h2database" % "h2" % "1.4.181"
+  )
+
+  lazy val thymeTemplate = Seq(
+    "org.thymeleaf" % "thymeleaf" % "2.1.3.RELEASE",
+    "org.thymeleaf" % "thymeleaf-spring4" % "2.1.3.RELEASE",
+    "nz.net.ultraq.thymeleaf" % "thymeleaf-layout-dialect" % "1.2.6",
+    "net.sourceforge.nekohtml" % "nekohtml" % "1.9.21"
   )
 
 }

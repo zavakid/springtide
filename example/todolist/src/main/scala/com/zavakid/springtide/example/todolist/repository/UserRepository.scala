@@ -20,7 +20,7 @@ trait UserRepository extends JpaRepository[User, java.lang.Long] with JpaSpecifi
 
   //def findOnlyId(id: Long): User
 
-  @Query("select u from UserEntity u where u.id = ?1")
+  @Query("select u from User u where u.id = ?1")
   def queryUserById(id: Long): User
 
   def queryUserByName(name: String): User

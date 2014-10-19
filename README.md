@@ -1,3 +1,3 @@
 # Springside
-Web Stack for Startup (Thanks OpenSource!)
+Web Develop for Awesome
 

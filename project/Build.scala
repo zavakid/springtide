@@ -27,6 +27,7 @@ object SpringtideBuild extends Build {
     .settings(libraryDependencies ++=
       coreDependencies)
     .settings(oneLogSettings: _*)
+    .enablePlugins(SbtTwirl)
 
   lazy val example = Project(id = "springtide-example", 
     base = file("example"))
@@ -54,6 +55,7 @@ object BuildSettings {
     startYear             := Some(2014),
     licenses              := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     scalaVersion          := ScalaVersion,
+    fullResolvers := Seq("Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository") ++ fullResolvers.value,
     ideaExcludeFolders := ".idea" :: ".idea_modules" :: Nil,
     // sbt-idea: donot download javadoc, we donot like them
     transitiveClassifiers in Global := Seq(Artifact.SourceClassifier),
@@ -144,7 +146,8 @@ object Dependencies {
 
   lazy val springWeb = Seq(
     "org.springframework" % "spring-web" % SpringVersion,
-    "org.springframework" % "spring-webmvc" % SpringVersion
+    "org.springframework" % "spring-webmvc" % SpringVersion,
+    "org.hibernate" % "hibernate-validator" % "5.1.2.Final"
   )
 
   lazy val jetty = Seq(

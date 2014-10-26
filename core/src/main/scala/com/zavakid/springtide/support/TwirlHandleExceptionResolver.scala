@@ -14,6 +14,7 @@ import org.springframework.web.servlet.{HandlerExceptionResolver, ModelAndView, 
 import org.springframework.web.{HttpMediaTypeNotAcceptableException, HttpMediaTypeNotSupportedException, HttpRequestMethodNotSupportedException}
 
 import scala.beans.BeanProperty
+import scala.util.control.NonFatal
 
 /**
  *
@@ -36,7 +37,7 @@ class TwirlHandleExceptionResolver extends HandlerExceptionResolver {
               _: TypeMismatchException | _: HttpMessageNotReadableException | _: MethodArgumentNotValidException |
               _: MissingServletRequestPartException | _: BindException) => defaultExceptionHandler(400, request, response, handler, accepts, ex)
       case _@(_: ConversionNotSupportedException | _: HttpMessageNotWritableException) => defaultExceptionHandler(500, request, response, handler, accepts, ex)
-      case _ => defaultExceptionHandler(-1, request, response, handler, accepts, ex)
+      case NonFatal(_) => defaultExceptionHandler(-1, request, response, handler, accepts, ex)
     }
     TwirlHandleExceptionResolver.emptyModelAndView
   }

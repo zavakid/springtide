@@ -7,7 +7,7 @@ import org.flywaydb.sbt.FlywayPlugin._
 import com.typesafe.sbt.web.SbtWeb
 import com.typesafe.sbt.web.SbtWeb.autoImport._
 import WebKeys._
-import com.typesafe.sbt.rjs.SbtRjs.autoImport._
+//import com.typesafe.sbt.rjs.SbtRjs.autoImport._
 import com.typesafe.sbt.digest.SbtDigest.autoImport._
 import com.typesafe.sbt.gzip.SbtGzip.autoImport._
 import play.twirl.sbt._
@@ -36,7 +36,7 @@ object SpringtideBuild extends Build {
 
   lazy val todolist = Project(id = "springtide-example-todolist",
     base = file("example/todolist"))
-    //.enablePlugins(SbtWeb)
+    .enablePlugins(SbtWeb)
     //.settings(SbtWeb.projectSettings: _*)
     .settings(libraryDependencies ++=
             todolistDependencies)
@@ -96,17 +96,22 @@ object BuildSettings {
     , flywayPassword := "c100k"
 
     //sbt-web
-    //,(pipelineStages in Assets) := Seq(rjs, digest)
+    , excludeFilter in digest := new FileFilter{
+      val regex = ".*/lib/.*".r.pattern
+      def accept(f: File) = {
+        regex.matcher(f.getAbsolutePath).matches
+      }
+    }
+    ,(pipelineStages in Assets) := Seq(digest, rjs)
     //,TwirlKeys.templateImports ++= Seq(
     //  "play.twirl.api._"
     //)
-
-    
   ) 
+
 }
 
 object Dependencies {
-  val SpringVersion = "4.1.0.RELEASE"
+  val SpringVersion = "4.1.1.RELEASE"
   val SpringDataJpaVersion = "1.7.0.RELEASE"
   val JettyVersion = "9.2.3.v20140905"
   val AkkaVersion = "2.3.6"
@@ -118,7 +123,7 @@ object Dependencies {
       "joda-time" % "joda-time" % "2.4",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
       "net.sf.dozer" % "dozer" % "5.5.1"  
-    ) ++ akka ++ jackson ++ spring ++ springWeb
+    ) ++ akka ++ jackson ++ spring ++ springWeb ++ springSecurity
 
   def coreDependencies:Seq[ModuleID] = basicDependencies ++ twirlTemplate ++ Seq(
     "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
@@ -147,7 +152,14 @@ object Dependencies {
   lazy val springWeb = Seq(
     "org.springframework" % "spring-web" % SpringVersion,
     "org.springframework" % "spring-webmvc" % SpringVersion,
-    "org.hibernate" % "hibernate-validator" % "5.1.2.Final"
+    "org.hibernate" % "hibernate-validator" % "5.1.2.Final",
+    "javax.el" % "javax.el-api" % "2.2.5",
+    "org.glassfish.web" % "javax.el" % "2.2.6"
+  )
+
+  lazy val springSecurity = Seq(
+    "org.springframework.security" % "spring-security-web" % "3.2.5.RELEASE",
+    "org.springframework.security" % "spring-security-config" % "3.2.5.RELEASE"
   )
 
   lazy val jetty = Seq(

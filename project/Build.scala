@@ -1,3 +1,6 @@
+import com.typesafe.sbt.packager.universal.UniversalPlugin
+import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
+import com.typesafe.sbt.packager.archetypes._
 import sbt._
 import Keys._
 import org.sbtidea.SbtIdeaPlugin._
@@ -7,9 +10,10 @@ import org.flywaydb.sbt.FlywayPlugin._
 import com.typesafe.sbt.web.SbtWeb
 import com.typesafe.sbt.web.SbtWeb.autoImport._
 import WebKeys._
-//import com.typesafe.sbt.rjs.SbtRjs.autoImport._
+import com.typesafe.sbt.rjs.SbtRjs.autoImport._
 import com.typesafe.sbt.digest.SbtDigest.autoImport._
 import com.typesafe.sbt.gzip.SbtGzip.autoImport._
+import com.typesafe.sbt.packager.Keys._
 import play.twirl.sbt._
 import play.twirl.sbt.Import.TwirlKeys
 
@@ -43,14 +47,18 @@ object SpringtideBuild extends Build {
     .settings(todolistSettings : _*)
     .settings(oneLogSettings: _*)
     .dependsOn(core)
-    .enablePlugins(SbtTwirl)
+    .enablePlugins(SbtTwirl, UniversalPlugin, JavaAppPackaging)
 
 }
 
 object BuildSettings {
+
+  val packageAssets = TaskKey[File]("package-assets")
+  //val packageAssetsMappings = TaskKey[Seq[(File, String)]]("package-assets-mappings")
+
   lazy val ScalaVersion = "2.11.2"
 
-  lazy val basicSettings = seq(
+  lazy val basicSettings = Seq(
     organization          := "com.zavakid.springtide",
     startYear             := Some(2014),
     licenses              := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
@@ -85,10 +93,17 @@ object BuildSettings {
         "99-empty" at "http://version99.qos.ch/",
         "Akka Repo" at "http://repo.akka.io/repository"
       )
-    ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ packSettings 
+    ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ packSettings
+
+//  def packageAssetsMappings = Def.task {
+//    val prefix = packagePrefix.value
+//    (pipeline in Defaults.ConfigGlobal).value map {
+//      case (file, path) => file -> (prefix + path)
+//    }
+//  }
 
   lazy val coreSettings = basicSettings
-  lazy val todolistSettings = basicSettings ++ seq(flywaySettings: _*) ++ Seq(
+  lazy val todolistSettings = basicSettings ++ Seq(flywaySettings: _*) ++ Seq(
     //packMain := Map("" -> "com.mogujie.dragon.gaia.web.GaiaRestLauncher")
     //,packExtraClasspath := Map("gaiaRest" -> Seq("${PROG_HOME}/conf"))
     flywayUrl := "jdbc:mysql://127.0.0.1/c100k"    
@@ -102,7 +117,28 @@ object BuildSettings {
         regex.matcher(f.getAbsolutePath).matches
       }
     }
-    ,(pipelineStages in Assets) := Seq(digest, rjs)
+    , pipelineStages in Assets := Seq(digest)
+    , packagePrefix in Assets := "public/"
+//    , packagePrefix in packageAssets := "public/"
+//    , artifactClassifier in packageAssets := Some("assets")
+//    , Keys.artifactName in packageAssets := { (_, mid, art) =>
+//        val classifier = art.classifier match {
+//          case None => ""
+//          case Some(c) => "-" + c
+//        }
+//        art.name + "-" + mid.revision + classifier + "." + art.extension
+//    }
+//    , artifactPath in packageAssets := {
+//        val sv = sbt.ScalaVersion((scalaVersion in Keys.artifactName).value, (scalaBinaryVersion in Keys.artifactName).value)
+//        target.value / (Keys.artifactName in packageAssets).value(sv, projectID.value, (artifact in packageAssets).value)
+//    }
+    //, mappings in Universal <+= (packageBin in Assets) map { file => file -> ("lib/" + file.getName)}
+    //, scriptClasspath += (organization.value + "." + packageAssets.value.getName)
+    //, mappings in Universal <++= (pipeline in Compile) map { jar => jar -> ("lib/" + jar.getName)}
+    , mappings in Universal ++= (pipeline in Defaults.ConfigGlobal).value map { case (file, path) =>
+      (file, (packagePrefix in Assets).value + path)
+    }
+
     //,TwirlKeys.templateImports ++= Seq(
     //  "play.twirl.api._"
     //)

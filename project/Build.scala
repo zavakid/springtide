@@ -111,30 +111,14 @@ object BuildSettings {
     , flywayPassword := "c100k"
 
     //sbt-web
-    , excludeFilter in digest := new FileFilter{
+    , excludeFilter in digest := new FileFilter {
       val regex = ".*/lib/.*".r.pattern
       def accept(f: File) = {
         regex.matcher(f.getAbsolutePath).matches
       }
     }
     , pipelineStages in Assets := Seq(digest)
-    , packagePrefix in Assets := "public/"
-//    , packagePrefix in packageAssets := "public/"
-//    , artifactClassifier in packageAssets := Some("assets")
-//    , Keys.artifactName in packageAssets := { (_, mid, art) =>
-//        val classifier = art.classifier match {
-//          case None => ""
-//          case Some(c) => "-" + c
-//        }
-//        art.name + "-" + mid.revision + classifier + "." + art.extension
-//    }
-//    , artifactPath in packageAssets := {
-//        val sv = sbt.ScalaVersion((scalaVersion in Keys.artifactName).value, (scalaBinaryVersion in Keys.artifactName).value)
-//        target.value / (Keys.artifactName in packageAssets).value(sv, projectID.value, (artifact in packageAssets).value)
-//    }
-    //, mappings in Universal <+= (packageBin in Assets) map { file => file -> ("lib/" + file.getName)}
-    //, scriptClasspath += (organization.value + "." + packageAssets.value.getName)
-    //, mappings in Universal <++= (pipeline in Compile) map { jar => jar -> ("lib/" + jar.getName)}
+    , packagePrefix in Assets := "static/public/"
     , mappings in Universal ++= (pipeline in Defaults.ConfigGlobal).value map { case (file, path) =>
       (file, (packagePrefix in Assets).value + path)
     }

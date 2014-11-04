@@ -12,7 +12,7 @@ import com.typesafe.sbt.web.SbtWeb.autoImport._
 import WebKeys._
 import com.typesafe.sbt.rjs.SbtRjs.autoImport._
 import com.typesafe.sbt.digest.SbtDigest.autoImport._
-import com.typesafe.sbt.gzip.SbtGzip.autoImport._
+//import com.typesafe.sbt.gzip.SbtGzip.autoImport._
 import com.typesafe.sbt.packager.Keys._
 import play.twirl.sbt._
 import play.twirl.sbt.Import.TwirlKeys
